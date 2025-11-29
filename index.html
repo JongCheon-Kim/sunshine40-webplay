@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sunshine40-webplay</title>
+
+  <style>
+    /* 기본 스타일 */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #0f121a;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      margin: 20px;
+      font-size: 2rem;
+    }
+
+    /* 파일 리스트 */
+    #fileList {
+      width: 100%;
+      max-width: 600px;
+      padding: 10px;
+      background: #151a23;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      overflow-y: auto;
+      max-height: 400px;
+    }
+
+    .item {
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #1e242f;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .item:hover {
+      background: #262f3d;
+    }
+
+    /* 컨텐츠 영역 */
+    #viewer {
+      width: 100%;
+      max-width: 600px;
+      background: #151a23;
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    audio, video {
+      width: 100%;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 80vh;
+      border-radius: 5px;
+    }
+
+    /* 반응형 디자인 */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      #fileList {
+        max-height: 300px;
+      }
+
+      #viewer {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>sunshine40-webplay</h1>
+  <p>다운로드할 파일을 선택하세요:</p>
+
+  <!-- 파일 리스트 -->
+  <div id="fileList">불러오는 중...</div>
+
+  <!-- 컨텐츠(재생, 보기) -->
+  <div id="viewer">
+    <div id="nowPlaying">NOW PLAYING</div>
+    <div id="content"></div>
+  </div>
+
+  <script>
+    const owner = "JongCheon-Kim";
+    const repo = "sunshine40-webplay";
+
+    // GitHub API를 통해 최신 릴리즈 파일 목록 가져오기
+    async function loadLatestRelease() {
+      const api = `https://api.github.com/repos/${owner}/${repo}/releases/latest`;
+
+      const res = await fetch(api);
+      const release = await res.json();
+
+      const assets = release.assets;
+      const listEl = document.getElementById("fileList");
+      listEl.innerHTML = "";
+
+      assets.forEach(a => {
+        const div = document.createElement("div");
+        div.className = "item";
+        const type = detectType(a.name);
+
+        div.innerHTML = `${a.name} <span class="type">${type.toUpperCase()}</span>`;
+        div.onclick = () => openFile(a.browser_download_url, a.name, type);
+        listEl.appendChild(div);
+      });
+    }
+
+    function detectType(filename) {
+      const ext = filename.split('.').pop().toLowerCase();
+      if (["mp3", "wav", "ogg"].includes(ext)) return "audio";
+      if (["mp4", "webm", "mov"].includes(ext)) return "video";
+      if (["pdf"].includes(ext)) return "pdf";
+      return "file";
+    }
+
+    function openFile(url, name, type) {
+      document.getElementById("nowPlaying").innerHTML = name;
+      const content = document.getElementById("content");
+
+      if (type === "audio") {
+        content.innerHTML = `<audio controls src="${url}"></audio>`;
+      } else if (type === "video") {
+        content.innerHTML = `<video controls src="${url}"></video>`;
+      } else if (type === "pdf") {
+        content.innerHTML = `<iframe src="${url}"></iframe>`;
+      } else {
+        content.innerHTML = `<a href="${url}" download>파일 다운로드 (${name})</a>`;
+      }
+    }
+
+    loadLatestRelease();
+  </script>
+
+</body>
+</html>
