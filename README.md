@@ -8,13 +8,9 @@ sunshine40-webplay는 다양한 미디어 파일(음악, 영상, PDF 등)을 웹
 - **파일 다운로드**: GitHub에서 파일을 직접 다운로드할 수 있는 기능 제공
 - **모바일 지원**: 모바일 및 데스크탑 환경에서 모두 지원되는 반응형 UI
 
+
 ## 바로가기
 
-[WebPlay 바로가기](https://github.com/JongCheon-Kim/sunshine40-webplay/releases)
+[WebPlay 바로가기](https://your-webplay-url-here)  
 
-## 설치 및 사용법
 
-1. **저장소 클론하기**
-   ```bash
-   git clone https://github.com/JongCheon-Kim/sunshine40-webplay.git
-   cd sunshine40-webplay
